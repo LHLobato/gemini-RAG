@@ -9,30 +9,33 @@ def send_question(API_KEY, question, chunks):
         formatted_chunks = "\n\n".join(chunks) 
     else:
         formatted_chunks = str(chunks)
-
-    sys_instruction = (
-        "You are a precise and helpful assistant. "
-        "Answer the question using ONLY the provided context. If there's any contradiction, explain it and why."
-        "If the answer is not in the context, say 'I cannot find the answer in the documents.'"
-    )
-
-
+        
     full_prompt = f"""
-    <context>
-    {formatted_chunks}
-    </context>
+    You are a highly precise and analytical assistant specialized in document analysis.
 
+    --- INSTRUCTIONS ---
+    1. **Analyze First:** Before answering, carefully scan the context below to identify all quotes relevant to the user's question.
+    2. **Strict Context Adherence:** Answer ONLY using the information provided in the 'Context' section. Do not use outside knowledge.
+    3. **Handle Uncertainty:** If the answer is not explicitly in the context, strictly state: "Não encontrei a resposta nos documentos fornecidos." (or the equivalent in the question's language).
+    4. **Contradictions:** If the context contains conflicting information, explain the contradiction clearly.
+    5. **Language Matching:** ALWAYS answer in the exact same language as the Question (e.g., if the question is in Portuguese, answer in Portuguese).
+    6. **Formatting:** Provide a direct and structured answer using Markdown (use **bold** for key concepts and lists where appropriate).
+
+    --- CONTEXT START ---
+    {formatted_chunks}
+    --- CONTEXT END ---
+    
     Question: {question}
+    Answer:
     """
 
     client = genai.Client(api_key=API_KEY)
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash", 
+        model='gemma-3-27b-it', 
         contents=full_prompt,
         config=types.GenerateContentConfig(
-            system_instruction=sys_instruction,
-            temperature=0.5, 
+            temperature=0.0, 
         )
     )
     
@@ -40,12 +43,19 @@ def send_question(API_KEY, question, chunks):
 
 def getting_embeddings(API_KEY, chunks:list):
     client = genai.Client(api_key=API_KEY)
-    result = client.models.embed_content(
-            model="text-embedding-004",
-            contents=chunks
-    )
+    embeddings = []
+    batch_size = 100
+    for i in range(0, len(chunks), batch_size):
+        batch = chunks[i:i+batch_size]  
+        try:     
+            result = client.models.embed_content(
+                        model="text-embedding-004",
+                        contents=batch
+            )
+            embeddings.extend(e.values for e in result.embeddings)
+        except Exception as e:
+            print(e)
 
-    embeddings = [e.values for e in result.embeddings]
     return np.array(embeddings, dtype='float32')
 
 def vector_seach(question_embeddings, chunk_embeddings, df):

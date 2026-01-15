@@ -5,7 +5,7 @@ pandas
 numpy
 faiss-cpu
 rank_bm25
-google-generativeai
+google-genai
 langchain
 langchain-community
 langchain-text-splitters

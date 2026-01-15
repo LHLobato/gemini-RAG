@@ -1,3 +1,4 @@
+from pathlib import Path
 import time
 import tempfile
 import os
@@ -28,8 +29,11 @@ def cleanup_sessions():
         sid for sid, data in USER_SESSIONS.items() 
         if current_time - data['last_active'] > SESSION_TIMEOUT
     ]
-    
+            
     for sid in expired_sessions:
+        file_path = Path(USER_SESSIONS[sid]['documents'])
+        if file_path.exists():
+            os.remove(file_path)  
         del USER_SESSIONS[sid]
     
     if len(USER_SESSIONS) > MAX_SESSIONS:
@@ -86,7 +90,8 @@ def upload_document():
         USER_SESSIONS[session_id] = {
             "df": df,
             "embeddings": chunk_embeddings,
-            "last_active": time.time()
+            "last_active": time.time(), 
+            "documents": [file.name]
         }
         
         return jsonify({
