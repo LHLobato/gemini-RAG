@@ -6,9 +6,7 @@ export class ApiClient {
     private sessionId: string | null;
 
     constructor() {
-        // TROQUE PELA URL DO RENDER QUANDO SUBIR
-        // Para teste local, use localhost:10000
-        this.baseUrl = "http://127.0.0.1:10000"; 
+        this.baseUrl = "https://gemini-rag-c8ng.onrender.com/"; 
         
         this.apiKey = localStorage.getItem("rag_api_key");
         this.sessionId = localStorage.getItem("rag_session_id");
