@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75' font-weight='bold' fill='url(%23grad)'%3E%3Cdefs%3E%3ClinearGradient id='grad'%3E%3Cstop offset='0%25' style='stop-color:%236366f1'/%3E%3Cstop offset='100%25' style='stop-color:%23ec4899'/%3E%3C/linearGradient%3E%3C/defs%3E🧠%3C/text%3E%3C/svg%3E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="RAG Chat - Document Intelligence Platform powered by AI" />
+    <meta name="theme-color" content="#6366f1" />
+    <title>RAG Chat - Document Intelligence Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="/assets/index-UvBaB3h9.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Dd93jtaI.css">
+  </head>
+  <body>
+    <div id="app" class="layout">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <div class="logo">
+            <span class="logo-icon">🧠</span>
+            <span>RAG Chat</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="api-config">
+            <input
+              type="text"
+              class="api-input"
+              id="apiEndpoint"
+              placeholder="API URL (e.g., http://localhost:10000)"
+              value="http://localhost:10000"
+            />
+            <input
+              type="password"
+              class="api-input"
+              id="apiKey"
+              placeholder="API Key"
+            />
+            <button class="btn btn-secondary btn-icon" id="settingsBtn" title="Settings">
+              ⚙️
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Sidebar -->
+        <aside class="sidebar custom-scrollbar">
+          <!-- Document Upload -->
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">📤 Upload Document</h3>
+            <div class="upload-zone hover-lift" id="uploadZone">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">
+                Drop your file here
+                <strong>or click to browse</strong>
+              </div>
+            </div>
+            <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.md,.csv" />
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center;">
+              PDF, DOCX, TXT, Markdown, CSV
+            </p>
+          </div>
+
+          <!-- Documents Section -->
+          <div class="sidebar-section" style="flex: 1; min-height: 0;">
+            <h3 class="sidebar-title">📚 Documents</h3>
+            <div class="documents-container custom-scrollbar" id="documentsList">
+              <div class="empty-documents">No documents loaded yet</div>
+            </div>
+          </div>
+
+          <!-- New Session Button -->
+          <button class="btn btn-danger hover-lift" id="newSessionBtn" style="width: 100%;">
+            🔄 New Session
+          </button>
+        </aside>
+
+        <!-- Chat Area -->
+        <section class="chat-area gradient-mesh">
+          <header class="chat-header smooth-hover">
+            <h2>💬 Chat with Your Documents</h2>
+            <p>Ask questions about your uploaded documents and get instant AI-powered answers</p>
+          </header>
+
+          <div class="messages-container custom-scrollbar" id="messagesContainer">
+            <div class="empty-state">
+              <div class="empty-state-icon" style="animation: float 3s ease-in-out infinite;">💬</div>
+              <p>Upload a document and start asking questions!</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
+                Your documents are processed securely and queries are powered by advanced AI.
+              </p>
+            </div>
+          </div>
+
+          <footer class="input-area">
+            <div class="status-messages" id="statusMessages"></div>
+            <div class="input-container">
+              <textarea
+                class="question-input input-focus"
+                id="questionInput"
+                placeholder="Ask a question about your document... (Shift+Enter for new line, Enter to send)"
+              ></textarea>
+              <div class="input-actions">
+                <button class="btn btn-primary btn-submit hover-lift" id="askBtn" title="Send question (Enter)">
+                  ➤
+                </button>
+                <button class="btn btn-secondary btn-clear" id="clearBtn">
+                  Clear
+                </button>
+              </div>
+            </div>
+          </footer>
+        </section>
+      </main>
+    </div>
+
+  </body>
+</html>
