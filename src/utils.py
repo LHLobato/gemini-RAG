@@ -49,7 +49,7 @@ def getting_embeddings(API_KEY, chunks:list):
         batch = chunks[i:i+batch_size]  
         try:     
             result = client.models.embed_content(
-                        model="text-embedding-001",
+                        model="gemini-embedding-001",
                         contents=batch
             )
             embeddings.extend(e.values for e in result.embeddings)
