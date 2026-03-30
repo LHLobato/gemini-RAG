@@ -1,15 +1,15 @@
 from google import genai
 from google.genai import types
-import numpy as np 
-import faiss 
+import numpy as np
+import faiss
 from rank_bm25 import BM25Okapi
 
 def send_question(API_KEY, question, chunks):
     if isinstance(chunks, list):
-        formatted_chunks = "\n\n".join(chunks) 
+        formatted_chunks = "\n\n".join(chunks)
     else:
         formatted_chunks = str(chunks)
-        
+
     full_prompt = f"""
     You are a highly precise and analytical assistant specialized in document analysis.
 
@@ -24,7 +24,7 @@ def send_question(API_KEY, question, chunks):
     --- CONTEXT START ---
     {formatted_chunks}
     --- CONTEXT END ---
-    
+
     Question: {question}
     Answer:
     """
@@ -32,13 +32,13 @@ def send_question(API_KEY, question, chunks):
     client = genai.Client(api_key=API_KEY)
 
     response = client.models.generate_content(
-        model='gemma-3-27b-it', 
+        model='gemma-3-27b-it',
         contents=full_prompt,
         config=types.GenerateContentConfig(
-            temperature=0.0, 
+            temperature=0.1,
         )
     )
-    
+
     return response.text
 
 def getting_embeddings(API_KEY, chunks:list):
@@ -46,8 +46,8 @@ def getting_embeddings(API_KEY, chunks:list):
     embeddings = []
     batch_size = 100
     for i in range(0, len(chunks), batch_size):
-        batch = chunks[i:i+batch_size]  
-        try:     
+        batch = chunks[i:i+batch_size]
+        try:
             result = client.models.embed_content(
                         model="gemini-embedding-001",
                         contents=batch
@@ -68,40 +68,40 @@ def vector_seach(question_embeddings, chunk_embeddings, df):
 
     results = []
     for i in range(k):
-        idx = I[0][i] 
-        score = D[0][i] 
-        
+        idx = I[0][i]
+        score = D[0][i]
+
         if idx < len(df):
-            row = df.iloc[idx].to_dict() 
+            row = df.iloc[idx].to_dict()
             row['score'] = score
             row['original_index'] = idx
             results.append(row)
-            
+
     return results
 
 def keywords_search(question, df, k=10):
     tokenized_corpus = [doc.lower().split() for doc in df['text'].tolist()]
-    
+
     bm25 = BM25Okapi(tokenized_corpus)
     tokenized_query = question.lower().split()
-    
-    
+
+
     scores = bm25.get_scores(tokenized_query)
-    
-    
+
+
     top_n_indices = np.argsort(scores)[::-1][:k]
-    
-    
+
+
     results = []
     for idx in top_n_indices:
-        
+
         row = df.iloc[idx].to_dict()
-        
-        row['score'] = scores[idx]     
-        row['original_index'] = idx    
-        
+
+        row['score'] = scores[idx]
+        row['original_index'] = idx
+
         results.append(row)
-        
+
     return results
 
 
