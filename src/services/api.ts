@@ -44,16 +44,29 @@ export class ApiClient {
         const formData = new FormData();
         formData.append("file", file);
 
-        const res = await fetch(`${this.baseUrl}/upload`, {
-            method: "POST",
-            headers: {
-                "X-Api-Key": this.apiKey || "",
-                "X-Session-ID": this.sessionId || ""
-            },
-            body: formData
-        });
+        const cleanBaseUrl = this.baseUrl.replace(/\/+$/, "");
+        const url = `${cleanBaseUrl}/upload`;
 
-        return res.json();
+        try {
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-Api-Key": this.apiKey || "",
+                    "X-Session-ID": this.sessionId || ""
+                },
+                body: formData
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || `Erro ${res.status}: ${res.statusText}`);
+            }
+
+            return await res.json();
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            throw error; 
+        }
     }
 
     async askQuestion(question: string): Promise<any> {

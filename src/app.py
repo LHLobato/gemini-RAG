@@ -15,7 +15,8 @@ ALLOWED_ORIGINS = [os.getenv("ALLOWED_ORIGIN"), "http://localhost:5173"]
 app = Flask(__name__)
 CORS(app, 
      origins=ALLOWED_ORIGINS, 
-     allow_headers=["Content-Type", "X-Api-Key", "X-Session-ID"])
+     allow_headers=["Content-Type", "X-Api-Key", "X-Session-ID"],  
+     methods=["GET", "POST", "OPTIONS"])
 
 
 API_ACCESS_TOKEN = os.getenv("API_ACCESS_TOKEN")
