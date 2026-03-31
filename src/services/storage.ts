@@ -19,7 +19,7 @@ export function saveConfig(config: Partial<ApiConfig>): void {
 
 export function loadConfig(): ApiConfig {
   return {
-    API_ENDPOINT: localStorage.getItem(storageKeys.endpoint) || 'http://localhost:5000',
+    API_ENDPOINT: localStorage.getItem(storageKeys.endpoint) || 'https://gemini-rag-c8ng.onrender.com/',
     API_KEY: localStorage.getItem(storageKeys.apiKey) || '',
   };
 }

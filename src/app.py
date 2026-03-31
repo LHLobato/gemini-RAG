@@ -11,9 +11,12 @@ from documents import load_document, get_chunks
 from utils import getting_embeddings, keywords_search, reciprocal_rank_function, send_question, vector_seach
 
 load_dotenv()
-
+ALLOWED_ORIGINS = [os.getenv("ALLOWED_ORIGIN"), "http://localhost:5173"]
 app = Flask(__name__)
-CORS(app)
+CORS(app, 
+     origins=ALLOWED_ORIGINS, 
+     allow_headers=["Content-Type", "X-Api-Key", "X-Session-ID"])
+
 
 API_ACCESS_TOKEN = os.getenv("API_ACCESS_TOKEN")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
